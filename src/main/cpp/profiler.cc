@@ -4,6 +4,7 @@
 
 void Profiler::AgentThreadRun(jvmtiEnv *jvmti_env, JNIEnv *jni_env, void *arg) {
     Profiler *profiler = static_cast<Profiler*>(arg);
+    profiler->run();
 }
 
 bool Profiler::start(JNIEnv *jni_env) {
@@ -18,6 +19,12 @@ bool Profiler::start(JNIEnv *jni_env) {
     }
     running.store(true, std::memory_order_release);
     return true;
+}
+
+void Profiler::run() {
+    while (is_running()) {
+        
+    }
 }
 
 void Profiler::stop() {

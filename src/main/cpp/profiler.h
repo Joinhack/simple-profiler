@@ -20,6 +20,8 @@ public:
     bool start(JNIEnv *jni_env);
 
     void stop();
+
+    void run();
 };
 
 #endif

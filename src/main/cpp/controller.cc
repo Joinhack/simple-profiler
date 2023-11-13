@@ -27,8 +27,29 @@ void ControllerServ::stop() {
 }
 
 class Socket {
-public:
+private:
     int _fd;
+public:
+    int fd() { 
+        return _fd;
+    }
+
+    int bind(struct sockaddr* addr, size_t len) {
+        return ::bind(_fd, addr, len);
+    }
+
+    int read(char *buf, size_t len) {
+        return ::read(_fd, buf, len);
+    }
+
+    int listen(int backlog) {
+        return ::listen(_fd, backlog);
+    }
+
+    int accept(struct sockaddr *peer_addr, socklen_t * len) {
+        return ::accept(_fd, peer_addr, len);
+    }
+
     Socket(int sock): _fd(sock)  {}
 
     ~Socket() {
@@ -47,11 +68,11 @@ bool ControllerServ::run() {
         return false;
     }
     Socket svr_sock = s_fd;
-    if (bind(svr_sock._fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+    if (svr_sock.bind((struct sockaddr*)&addr, sizeof(addr)) < 0) {
         log_error("ERROR: bind error\n");
         return false;
     }
-    if (listen(svr_sock._fd, 3) < 0) {
+    if (svr_sock.listen(3) < 0) {
         log_error("ERROR: listen error\n");
         return false;
     }
@@ -62,13 +83,13 @@ bool ControllerServ::run() {
         char buf[buf_len];
 
         int n;
-        int peer_fd = accept(svr_sock._fd, &peer_addr, &slen);
+        int peer_fd = svr_sock.accept(&peer_addr, &slen);
         if (peer_fd < 0) {
             log_error("ERROR: accept error\n");
             continue;
         }
         Socket peer_sock = peer_fd;
-        while ((n = read(peer_sock._fd, buf, buf_len)) > 0) {
+        while ((n = peer_sock.read(buf, buf_len)) > 0) {
             n = n < buf_len? n: buf_len - 1;
             buf[n] = 0;
             if (strncmp(buf, "start", n)) {
