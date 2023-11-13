@@ -23,8 +23,12 @@ bool Profiler::start(JNIEnv *jni_env) {
 
 void Profiler::run() {
     while (is_running()) {
-        
+
     }
+}
+
+void Profiler::update_sigprof_interval() {
+
 }
 
 void Profiler::stop() {
