@@ -9,7 +9,7 @@ AsgcType VM::_asgc;
 int VM::init(JavaVM *jvm) {
     _jvm = jvm;
     void* symbol = dlsym(RTLD_DEFAULT, "AsyncGetCallTrace");
-    AsgcType asgc = bit_cast<AsgcType>(symbol);
+    AsgcType asgc = reinterpret_cast<AsgcType>(symbol);
     setAsgc(asgc);
 
     jvmtiEnv *jvmti;
@@ -66,4 +66,9 @@ jthread VM::new_jthread(JNIEnv *jni_env, const char *thr_name) {
         jni_env->CallObjectMethod(thr_obj, set_name, utf8name);
     }
     return thr_obj;
+}
+
+void VM::handle_sigprof(int sig, siginfo_t* info, void* ucontext) {
+    JVMPI_CallTrace trace;
+    _asgc(&trace, MAX_FRAME_DEEP, ucontext);
 }

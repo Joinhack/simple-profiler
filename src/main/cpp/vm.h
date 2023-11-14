@@ -4,6 +4,8 @@
 #include "profiler.h"
 #include "controller.h"
 
+#define MAX_FRAME_DEEP 128
+
 typedef struct {
     jint lineno;
     jmethodID method_id;
@@ -37,6 +39,8 @@ public:
      static jthread new_jthread(JNIEnv *jni_env, const char *thr_name);
 
      static void JNICALL VMInit(jvmtiEnv* jvmti, JNIEnv* jni, jthread thread);
+
+     static void handle_sigprof(int, siginfo_t*, void*);
 
 private:
     static JavaVM *_jvm;

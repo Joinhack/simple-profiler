@@ -1,3 +1,5 @@
+#include <sys/time.h>
+#include "common.h"
 #include "signal_proc.h"
 
 void SignalProc::install_action(int signo, SigActionFn action) {
@@ -9,11 +11,24 @@ void SignalProc::install_action(int signo, SigActionFn action) {
     sigaction(signo, &sa, &oldsa);
 }
 
-void SignalProc::update_interval() {
-    int interval = _intervals[_interval_index];
-    if (_current_interval == interval) {
-        
-    }
+bool SignalProc::update_interval() {
+    bool rs = update_interval(_intervals[_interval_index]);
     _interval_index = (_interval_index + 1) % MAX_SIGNAL_SIZE;
+    return rs;
+}
+
+bool SignalProc::update_interval(int interval) {
+    if (_current_interval == interval) {
+        return true;
+    }
+    struct itimerval timer;
+    timer.it_interval.tv_sec = interval/1000;
+    timer.it_interval.tv_usec = (interval*1000)%1000000;
+    timer.it_value = timer.it_interval;
+    if (setitimer(ITIMER_PROF, &timer, nullptr) < 0) {
+        log_error("ERROR: Set the timer error. \n");
+        return false;
+    }
     _current_interval = interval;
+    return true;
 }

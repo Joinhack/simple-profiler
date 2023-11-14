@@ -12,6 +12,8 @@ private:
     std::array<int, MAX_SIGNAL_SIZE>  _intervals;
     int _current_interval;
     int _interval_index;
+
+    
 public:
     typedef void(*SigActionFn)(int, siginfo_t*, void*);
     SignalProc() = delete;
@@ -27,7 +29,9 @@ public:
         }
     }
 
-    void update_interval();
+    bool update_interval();
+    
+    bool update_interval(int interval);
 
     void install_action(int signo, SigActionFn action);
     

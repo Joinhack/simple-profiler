@@ -3,25 +3,26 @@
 #include <atomic>
 #include <jvmti.h>
 #include "signal_proc.h"
-#define DEFAULT_INTERVAL 1
+#define DEFAULT_MIN_INTERVAL 1
+#define DEFAULT_MAX_INTERVAL 5
 
 class Profiler {
 private:
-    std::atomic<bool> running;
-    jvmtiEnv *_jvmti_env;
-    SignalProc *signal_proc;
+    std::atomic<bool> _running;
+    jvmtiEnv *_jvmti;
+    SignalProc *_signal_proc;
     
     static void AgentThreadRun(jvmtiEnv *jvmti_env, JNIEnv *jni_env, void *arg);
 
     static void IntervalHandle();
 public:
     Profiler(jvmtiEnv *jvmti_env): 
-        running(false),_jvmti_env(jvmti_env) {
-            signal_proc = new SignalProc(DEFAULT_INTERVAL, DEFAULT_INTERVAL);
+        _running(false),_jvmti(jvmti_env) {
+            _signal_proc = new SignalProc(DEFAULT_MIN_INTERVAL, DEFAULT_MAX_INTERVAL);
     }
 
     bool is_running() {
-        return running.load(std::memory_order_acquire);
+        return _running.load(std::memory_order_acquire);
     }
 
     void update_interval();
@@ -33,6 +34,8 @@ public:
     void stop();
 
     void run();
+
+    void sleep(int period);
 };
 
 #endif

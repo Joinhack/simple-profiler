@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(Simple-Profiler)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "build")
+set (CMAKE_CXX_STANDARD 11)
 
 include(CheckLibraryExists)
 include(CheckSymbolExists)
@@ -31,6 +32,8 @@ set(SRC_FILES
     ${SRC_PATH}/profiler.h
     ${SRC_PATH}/controller.cc
     ${SRC_PATH}/controller.h
+    ${SRC_PATH}/signal_proc.cc
+    ${SRC_PATH}/signal_proc.h
 )
 
 add_library(sagent SHARED ${SRC_FILES})
