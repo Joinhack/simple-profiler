@@ -50,6 +50,11 @@ public:
         return ::accept(_fd, peer_addr, len);
     }
 
+    int set_reuse() {
+        int optval = 1;
+        return setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+    }
+
     Socket(int sock): _fd(sock)  {}
 
     ~Socket() {
@@ -68,6 +73,10 @@ bool ControllerServ::run() {
         return false;
     }
     Socket svr_sock = s_fd;
+    if (svr_sock.set_reuse() < 0)  {
+        log_error("ERROR: set socket reuse error\n");
+        return false;
+    }
     if (svr_sock.bind((struct sockaddr*)&addr, sizeof(addr)) < 0) {
         log_error("ERROR: bind error\n");
         return false;
