@@ -2,13 +2,13 @@
 #include "common.h"
 #include "signal_proc.h"
 
-void SignalProc::install_action(int signo, SigActionFn action) {
+void SignalProc::install_sigprof_action(SigActionFn action) {
     struct sigaction sa;
     struct sigaction oldsa;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = action;
     sa.sa_flags = SA_SIGINFO | SA_RESTART;
-    sigaction(signo, &sa, &oldsa);
+    sigaction(SIGPROF, &sa, &oldsa);
 }
 
 bool SignalProc::update_interval() {
@@ -22,8 +22,8 @@ bool SignalProc::update_interval(int interval) {
         return true;
     }
     struct itimerval timer;
-    timer.it_interval.tv_sec = interval/1000;
-    timer.it_interval.tv_usec = (interval*1000)%1000000;
+    timer.it_interval.tv_sec = interval/1000000000;
+    timer.it_interval.tv_usec = (interval%1000000)%1000;
     timer.it_value = timer.it_interval;
     if (setitimer(ITIMER_PROF, &timer, nullptr) < 0) {
         log_error("ERROR: Set the timer error. \n");

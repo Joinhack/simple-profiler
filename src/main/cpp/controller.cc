@@ -101,10 +101,12 @@ bool ControllerServ::run() {
         while ((n = peer_sock.read(buf, buf_len)) > 0) {
             n = n < buf_len? n: buf_len - 1;
             buf[n] = 0;
-            if (strncmp(buf, "start", n)) {
+            if (strnstr(buf, "start", n) != nullptr) {
                 _profiler->start(VM::get_jni_env());
-            } else if (strncmp(buf, "quit", n)) {
+            } else if (strnstr(buf, "quit", n) != nullptr) {
                 break;
+            } else if (strnstr(buf, "stop", n) != nullptr) {
+                _profiler->stop();
             }
         }
     }

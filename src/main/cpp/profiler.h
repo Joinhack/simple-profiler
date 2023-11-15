@@ -3,8 +3,8 @@
 #include <atomic>
 #include <jvmti.h>
 #include "signal_proc.h"
-#define DEFAULT_MIN_INTERVAL 1
-#define DEFAULT_MAX_INTERVAL 5
+#define DEFAULT_MIN_INTERVAL 10
+#define DEFAULT_MAX_INTERVAL 100
 
 class Profiler {
 private:

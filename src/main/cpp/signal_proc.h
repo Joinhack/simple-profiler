@@ -5,14 +5,11 @@
 
 #define MAX_SIGNAL_SIZE 1024
 
-
-
 class SignalProc {
 private:
     std::array<int, MAX_SIGNAL_SIZE>  _intervals;
-    int _current_interval;
-    int _interval_index;
-
+    int _current_interval = -1;
+    int _interval_index = 0;
     
 public:
     typedef void(*SigActionFn)(int, siginfo_t*, void*);
@@ -33,7 +30,7 @@ public:
     
     bool update_interval(int interval);
 
-    void install_action(int signo, SigActionFn action);
+    void install_sigprof_action(SigActionFn action);
     
 };
 #endif //_SIGNAL_PROC_H

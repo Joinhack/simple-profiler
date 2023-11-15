@@ -47,13 +47,14 @@ bool Profiler::start(JNIEnv *jni_env) {
     bool run_flags = is_running();
     if (run_flags) 
         return true;
-    _signal_proc->install_action(SIGPROF, VM::handle_sigprof);
+    _signal_proc->install_sigprof_action(VM::handle_sigprof);
     jthread prof_thr = VM::new_jthread(jni_env, "Simple Profiler Thread");
     jvmtiError err = _jvmti->RunAgentThread(prof_thr, AgentThreadRun, this, JVMTI_THREAD_NORM_PRIORITY);
     if (err != JVMTI_ERROR_NONE) {
         log_error("ERROR: run agent thread error %d\n", err);
         return false;
     }
+    _signal_proc->update_interval();
     _running.store(true, std::memory_order_release);
     return true;
 }
@@ -68,5 +69,8 @@ void Profiler::run() {
 }
 
 void Profiler::stop() {
+    std::cout << "MESSAGE: stop profile" << std::endl;
+    // stop signal.
+    _signal_proc->update_interval(0);
     _running.store(false, std::memory_order_release);
 }
