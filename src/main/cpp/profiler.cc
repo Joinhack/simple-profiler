@@ -70,7 +70,6 @@ void Profiler::run() {
 
 void Profiler::stop() {
     std::cout << "MESSAGE: stop profile" << std::endl;
-    // stop signal.
     _signal_proc->update_interval(0);
     _running.store(false, std::memory_order_release);
 }
