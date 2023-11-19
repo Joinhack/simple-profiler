@@ -3,6 +3,7 @@
 #include <atomic>
 #include <jvmti.h>
 #include "signal_proc.h"
+#include "circle_queue.h"
 #define DEFAULT_MIN_INTERVAL 10
 #define DEFAULT_MAX_INTERVAL 100
 
@@ -11,6 +12,7 @@ private:
     std::atomic<bool> _running;
     jvmtiEnv *_jvmti;
     SignalProc *_signal_proc;
+    CircleQueue *_queue;
     
     static void AgentThreadRun(jvmtiEnv *jvmti_env, JNIEnv *jni_env, void *arg);
 
@@ -19,6 +21,7 @@ public:
     Profiler(jvmtiEnv *jvmti_env): 
         _running(false),_jvmti(jvmti_env) {
             _signal_proc = new SignalProc(DEFAULT_MIN_INTERVAL, DEFAULT_MAX_INTERVAL);
+            _queue = new CircleQueue();
     }
 
     bool is_running() {

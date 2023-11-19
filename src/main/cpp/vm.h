@@ -6,21 +6,6 @@
 
 #define MAX_FRAME_DEEP 128
 
-typedef struct {
-    jint lineno;
-    jmethodID method_id;
-} JVMPI_CallFrame;
-
-typedef struct {
-    // JNIEnv of the thread from which we grabbed the trace
-    JNIEnv *env;
-    // < 0 if the frame isn't walkable
-    jint num_frames;
-    // The frames, callee first.
-    JVMPI_CallFrame *frames;
-} JVMPI_CallTrace;
-
-typedef void (*AsgcType)(JVMPI_CallTrace*, jint, void*);
 
 class VM {
 public:

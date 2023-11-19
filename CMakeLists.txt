@@ -34,6 +34,8 @@ set(SRC_FILES
     ${SRC_PATH}/controller.h
     ${SRC_PATH}/signal_proc.cc
     ${SRC_PATH}/signal_proc.h
+    ${SRC_PATH}/circle_queue.cc
+    ${SRC_PATH}/circle_queue.h
 )
 
 add_library(sagent SHARED ${SRC_FILES})
