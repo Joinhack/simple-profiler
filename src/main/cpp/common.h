@@ -25,4 +25,6 @@ typedef void (*AsgcType)(JVMPI_CallTrace*, jint, void*);
 
 void log_error(const char* format, ...);
 
+void log_trace(const char* format, ...);
+
 #endif

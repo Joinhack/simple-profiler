@@ -61,9 +61,21 @@ bool Profiler::start(JNIEnv *jni_env) {
 
 void Profiler::run() {
     std::cout << "MESSAGE: start profile" << std::endl;
+    size_t count = 0;
     while (is_running()) {
         //TODO! record.
-        _signal_proc->update_interval();
+        while (_queue->pop()) {
+            count++;
+        }
+        if (count >= 100) {
+            log_trace("TRACE: prof too fast.\n");
+            if (!_signal_proc->update_interval()) {
+                return;
+            }
+            count = 0;
+        } else {
+            continue;
+        }
         sleep(1);
     }
 }

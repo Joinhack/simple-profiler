@@ -71,4 +71,5 @@ jthread VM::new_jthread(JNIEnv *jni_env, const char *thr_name) {
 void VM::handle_sigprof(int sig, siginfo_t* info, void* ucontext) {
     JVMPI_CallTrace trace;
     _asgc(&trace, MAX_FRAME_DEEP, ucontext);
+    _prof->push_trace(trace);
 }

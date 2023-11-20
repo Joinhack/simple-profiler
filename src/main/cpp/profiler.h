@@ -34,6 +34,10 @@ public:
 
     void update_sigprof_interval();
 
+    bool push_trace(JVMPI_CallTrace &trace) {
+        return _queue->push(trace);
+    }
+
     void stop();
 
     void run();
